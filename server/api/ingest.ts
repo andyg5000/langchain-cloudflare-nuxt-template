@@ -17,9 +17,9 @@ const upsertDocsToVectorstore = async (
   const ids = [];
   const encoder = new TextEncoder();
   for (const doc of docs) {
-    // Vectorize does not support object metadata, and we won't be needing it for
-    // this app.
-    doc.metadata = {};
+    if (doc.metadata?.loc) {
+      doc.metadata.loc = JSON.stringify(doc.metadata.loc);
+    }
     const insecureHash = await crypto.subtle.digest(
       "SHA-1",
       encoder.encode(doc.pageContent),
